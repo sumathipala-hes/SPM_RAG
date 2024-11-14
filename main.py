@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pymongo import MongoClient, errors
 import pdfplumber
@@ -32,6 +33,20 @@ genai.configure(api_key=GOOGLE_API_KEY)
 
 # Initialize FastAPI app
 app = FastAPI()
+
+# Set up CORS to allow requests from the frontend (localhost:3000)
+origins = [
+    "http://localhost:3000",  # Frontend URL
+    "https://spm-rag-frontend-harsha-senarathnas-projects.vercel.app",  # Vercel deployment URL
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class PromptRequest(BaseModel):
     question: str
